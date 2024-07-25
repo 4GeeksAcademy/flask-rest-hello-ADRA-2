@@ -27,16 +27,18 @@ class User(db.Model):
 class Planet(db.Model):
     __tablename__ = 'planet'
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(100), nullable=False)
     gravity = db.Column(db.String(100), nullable=False)
     climate = db.Column(db.String(100), nullable=False)
 
-def __repr__(self):
-        return '<Planet %r>' % self.description
+    def __repr__(self):
+        return '<Planet %r>' % self.name
 
-def serialize(self):
-    return {
+    def serialize(self):
+        return {
         "id": self.id,
+        "name": self.name,
         "description": self.description,
         "gravity": self.gravity,
         "climate": self.climate,
@@ -45,17 +47,19 @@ def serialize(self):
 
 class People(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name_people = db.Column(db.String(252), nullable=False)
     description = db.Column(db.String(100), nullable=False)
     mass = db.Column(db.String(100), nullable=False)
     birth_year = db.Column(db.String(50), nullable=False)
     gender = db.Column(db.String(50), nullable=False)
 
     def __repr__(self):
-        return '<People %r>' % self.description
+        return '<People %r>' % self.name_people
 
-def serialize(self):
-    return {
+    def serialize(self):
+        return {
         "id": self.id,
+        "name_people": self.name_people,
         "description": self.description,
         "mass": self.mass,
         "birth_year": self.birth_year,
@@ -63,38 +67,34 @@ def serialize(self):
         # do not serialize the password, it's a security breach
     }
 
-class People_favorite(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(100), nullable=False)
-    User_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    user=db.relationship(User)
-
-def __repr__(self):
-        return '<People %r>' % self.first_name
-
-def serialize(self):
-    return {"fisr_name": self.first_name}
 
 class People_favorites(db.Model):
+    __tablename__ = 'people_favorites'
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(100), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user=db.relationship(User)
+    people_id = db.Column(db.Integer, db.ForeignKey("people.id"))
+    people = db.relationship(People)
 
-def __repr__(self):
-        return '<People %r>' % self.first_name
+    def __repr__(self):
+        return '<People_favorites %r>' % self.name_people
 
-def serialize(self):
-    return {"fisr_name": self.first_name}
+    def serialize(self):
+        return {"id": self.id,
+                "user": self.user.first_name,
+                "people": self.people.name_people}
 
 class Planet_Favorites(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(250), nullable=False, unique=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user=db.relationship(User)
+    planet_id = db.Column(db.Integer, db.ForeignKey('planet.id'))
+    planet = db.relationship(Planet)
 
     def __repr__(self):
-        return '<Planet %r>' % self.irst_name
+        return '<Planet_favorites %r>' % self.name
 
-def serialize(self):
-    return {"name": self.name}
+    def serialize(self):
+        return {"id": self.id,
+                "user": self.user.first_name,
+                "planet": self.planet.name}
