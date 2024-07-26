@@ -153,10 +153,6 @@ def delete_favorite_planet(user_id, planet_id):
     if user is None:
         return jsonify({"error": "User not found"}), 404
     
-    planet = Planet_Favorites.query.filter_by(id=planet_id).first()
-    if planet is None:
-        return jsonify({"error": "Planet not found"}), 404
-    
     favorite_planet = Planet_Favorites.query.filter_by(user_id=user_id, planet_id=planet_id).first()
     if favorite_planet is None:
         return jsonify({"error": "Favorite planet not found"}), 404
@@ -164,6 +160,7 @@ def delete_favorite_planet(user_id, planet_id):
     db.session.delete(favorite_planet)
     db.session.commit()
     return jsonify({"info": "Favorite planet deleted"})
+
 
 @app.route('/favorite/user/<int:user_id>/people/<int:people_id>', methods=['DELETE'])
 def delete_People_favorites(user_id, people_id):
@@ -174,17 +171,14 @@ def delete_People_favorites(user_id, people_id):
     if user is None:
         return jsonify({"error": "User not found"}), 404
     
-    people = people.query.filter_by(id=people_id).first()
-    if people is None:
-        return jsonify({"error": "people not found"}), 404
-    
     people_favorites = People_favorites.query.filter_by(user_id=user_id, people_id=people_id).first()
-    if People_favorites is None:
+    if people_favorites is None:
         return jsonify({"error": "Favorite people not found"}), 404
     
     db.session.delete(people_favorites)
     db.session.commit()
     return jsonify({"info": "Favorite people deleted"})
+
 
 
 
